@@ -15,8 +15,8 @@
  * @param {number} n
  * @returns {boolean}
  */
-function isInteger(n) {
-    // Ваш код
+function isInteger(n) {return typeof n === 'number' && Number.isFinite(n) && Number.isInteger(n);
+    
 }
 
 /**
@@ -28,7 +28,11 @@ function isInteger(n) {
  * @returns {number[]}
  */
 function even() {
-    // Ваш код
+    const result = [];
+    for (let i = 2; i <= 20; i += 2) {
+        result.push(i);
+    }
+    return result;
 }
 
 /**
@@ -40,7 +44,11 @@ function even() {
  * @returns {number}
  */
 function sumTo(n) {
-    // Ваш код
+    let sum = 0;
+    for (let i = 1; i <= n; i++) {
+        sum += i;
+    }
+    return sum;
 }
 
 /**
@@ -53,7 +61,8 @@ function sumTo(n) {
  * @returns {number}
  */
 function recSumTo(n) {
-    // Ваш код
+    if (n <= 1) return n;
+    return n + recSumTo(n - 1);
 }
 
 /**
@@ -65,7 +74,8 @@ function recSumTo(n) {
  * @returns {number}
  */
 function factorial(n) {
-    // Ваш код
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
 }
 
 /**
@@ -78,7 +88,8 @@ function factorial(n) {
  * @returns {boolean}
  */
 function isBinary(n) {
-    // Ваш код
+    if (typeof n !== 'number' || !Number.isInteger(n) || n <= 0) return false;
+    return (n & (n - 1)) === 0;
 }
 
 /**
@@ -92,7 +103,15 @@ function isBinary(n) {
  * @returns {number}
  */
 function fibonacci(n) {
-    // Ваш код
+    if (n <= 0) return 0;
+    if (n === 1) return 1;
+    let a = 0, b = 1;
+    for (let i = 2; i <= n; i++) {
+        const temp = a + b;
+        a = b;
+        b = temp;
+    }
+    return b;
 }
 
 /**
@@ -120,7 +139,15 @@ function fibonacci(n) {
  * @returns {Function}
  */
 function getOperationFn(initialValue, operatorFn) {
-    // Ваш код
+    if (typeof operatorFn !== 'function') {
+        return function() { return initialValue; };
+    }
+
+    let current = initialValue;
+    return function (value) {
+        current = operatorFn(current, value);
+        return current;
+    };
 }
 
 /**
@@ -140,8 +167,13 @@ function getOperationFn(initialValue, operatorFn) {
  * @param {number} [step=1]
  * @returns {Function}
  */
-function sequence(start, step) {
-    // Ваш код
+function sequence(start = 0, step = 1) {
+    let current = start;
+    return function () {
+        const value = current;
+        current += step;
+        return value;
+    };
 }
 
 /**
@@ -166,7 +198,35 @@ function sequence(start, step) {
  * @returns {boolean}
  */
 function deepEqual(firstObject, secondObject) {
-    // Ваш код
+    if (typeof firstObject === 'number' && typeof secondObject === 'number' && isNaN(firstObject) && isNaN(secondObject)) {
+        return true;
+    }
+
+    if (firstObject === secondObject) return true;
+    if (typeof firstObject !== 'object' || firstObject === null || typeof secondObject !== 'object' || secondObject === null) return false;
+
+    const firstIsArr = Array.isArray(firstObject);
+    const secondIsArr = Array.isArray(secondObject);
+    if (firstIsArr !== secondIsArr) return false;
+
+    if (firstIsArr && secondIsArr) {
+        if (firstObject.length !== secondObject.length) return false;
+        for (let i = 0; i < firstObject.length; i++) {
+            if (!deepEqual(firstObject[i], secondObject[i])) return false;
+        }
+        return true;
+    }
+
+    const firstKeys = Object.keys(firstObject);
+    const secondKeys = Object.keys(secondObject);
+    if (firstKeys.length !== secondKeys.length) return false;
+
+    for (const key of firstKeys) {
+        if (!Object.prototype.hasOwnProperty.call(secondObject, key)) return false;
+        if (!deepEqual(firstObject[key], secondObject[key])) return false;
+    }
+    return true;
+
 }
 
 module.exports = {
